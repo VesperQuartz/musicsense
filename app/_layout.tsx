@@ -1,13 +1,12 @@
 import '@/global.css';
-
 import { Theme, ThemeProvider, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { PortalHost } from '@rn-primitives/portal';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
 import { Platform } from 'react-native';
 
 import { Container } from '@/components/Container';
-import { useGetAudioPermision } from '@/hooks/media';
 import { useColorScheme } from '@/hooks/use-color';
 import { NAV_THEME } from '@/lib/constants';
 import { AsyncProvider } from '@/providers/async-provider';
@@ -60,6 +59,7 @@ export default function RootLayout() {
           </Stack>
         </Container>
       </ThemeProvider>
+      <PortalHost />
     </AsyncProvider>
   );
 }
