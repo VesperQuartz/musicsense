@@ -1,9 +1,22 @@
-import { SafeAreaView } from 'react-native';
+import { Platform, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 
 export const Container = ({ children }: { children: React.ReactNode }) => {
-  return <SafeAreaView className={styles.container}>{children}</SafeAreaView>;
+  return (
+    <>
+      <SafeAreaView
+        style={[
+          styles.container,
+          { paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 },
+        ]}>
+        {children}
+      </SafeAreaView>
+    </>
+  );
 };
 
-const styles = {
-  container: 'flex flex-1 m-6',
-};
+const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    flex: 1,
+  },
+});
