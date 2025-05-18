@@ -3,14 +3,17 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useFonts, Inter_900Black, Inter_400Regular } from '@expo-google-fonts/inter';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Link, Redirect } from 'expo-router';
+import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { ActivityIndicator, FlatList, ScrollView, ToastAndroid, View } from 'react-native';
 import { z } from 'zod';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardTitle, CardDescription } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -34,6 +37,7 @@ const Home = () => {
   const { isSignedIn } = useAuth();
   const { user } = useUser();
   const [fontsLoaded] = useFonts({ Inter_900Black, Inter_400Regular });
+  const [query, setQuery] = useState('');
   const {
     control,
     handleSubmit,
@@ -41,7 +45,7 @@ const Home = () => {
   } = useForm({
     resolver: zodResolver(formSchema),
   });
-  const memories = useGetMemories();
+  const memories = useGetMemories(query);
   const newMemory = useCreateMemory();
   const queryClient = useQueryClient();
   if (!fontsLoaded) return null;
@@ -149,6 +153,18 @@ const Home = () => {
             </Dialog>
           </View>
         </View>
+        <View className="mb-2 mt-2 flex flex-row items-center rounded-xl bg-white/10 px-3 py-2 shadow-md">
+          <Ionicons name="search" size={22} color="#aaa" style={{ marginRight: 8 }} />
+          <Input
+            className="flex-1 border-0 bg-transparent text-white"
+            placeholder="Search memories..."
+            placeholderTextColor="#aaa"
+            value={query}
+            onChangeText={setQuery}
+            returnKeyType="search"
+            clearButtonMode="while-editing"
+          />
+        </View>
         <View className="flex h-48 flex-1">
           {memories.isLoading && (
             <View className="flex flex-row gap-2">
@@ -159,20 +175,16 @@ const Home = () => {
           )}
           <View className="flex flex-1 flex-col gap-2">
             <FlatList
-              contentContainerClassName="gap-2"
+              contentContainerClassName="gap-4 pb-2"
               data={memories.data ?? []}
               horizontal
-              renderItem={({ item }) => {
-                return (
-                  <Link href={`/(home)/${item.name}`}>
-                    <Card className="h-48 w-36 rounded-xl bg-[#f43f5e]">
-                      <CardHeader>
-                        <CardTitle>{item.name}</CardTitle>
-                      </CardHeader>
-                    </Card>
-                  </Link>
-                );
-              }}
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <Link href={`/(home)/${item.name}`}>
+                  <MemoryCard memory={item} />
+                </Link>
+              )}
+              keyExtractor={(item) => item.name}
             />
           </View>
         </View>
@@ -180,5 +192,35 @@ const Home = () => {
     </ScrollView>
   );
 };
+
+const MemoryCard = ({ memory }: { memory: any }) => (
+  <Card className="mr-2 h-48 w-36 overflow-hidden rounded-2xl border-0 bg-transparent p-0 shadow-lg">
+    <LinearGradient
+      colors={['#d946ef', '#ec4899', '#f43f5e']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={{ flex: 1, borderRadius: 16, overflow: 'hidden' }}>
+      <View className="h-full flex-1 justify-end">
+        <View className="flex-1 justify-end rounded-b-2xl bg-black/40 p-4">
+          <Badge className="mb-2 self-start bg-white/10" variant="secondary">
+            <Text className="text-xs text-white">Memory</Text>
+          </Badge>
+          <CardTitle className="mb-1 text-xl font-bold text-white" numberOfLines={2}>
+            <Text className="text-xl font-bold text-white" numberOfLines={2}>
+              {memory.name}
+            </Text>
+          </CardTitle>
+          {memory.description ? (
+            <CardDescription className="text-xs text-white/80" numberOfLines={2}>
+              <Text className="text-xs text-white/80" numberOfLines={2}>
+                {memory.description}
+              </Text>
+            </CardDescription>
+          ) : null}
+        </View>
+      </View>
+    </LinearGradient>
+  </Card>
+);
 
 export default Home;

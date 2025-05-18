@@ -14,6 +14,7 @@ type Memory = {
 };
 
 type Tracks = {
+  id: string;
   url: string;
   title: string;
   artist: string;
@@ -44,7 +45,7 @@ export const useCreateMemory = () => {
   });
 };
 
-export const useGetMemories = () => {
+export const useGetMemories = (query?: string) => {
   const user = useUser();
   return useQuery({
     queryKey: ['memories', user.user?.id],
@@ -55,6 +56,15 @@ export const useGetMemories = () => {
         throw new Error(err.message);
       }
       return response.json<Memory[]>();
+    },
+    select: (data: Memory[]) => {
+      if (!query) return data;
+      const q = query.toLowerCase();
+      return data.filter(
+        (m) =>
+          m.name.toLowerCase().includes(q) ||
+          (m.description && m.description.toLowerCase().includes(q))
+      );
     },
   });
 };
@@ -101,7 +111,7 @@ export const useSearchAlbum = ({ albumName }: { albumName: string | undefined })
 export const useGetUserTracks = (memory: string | undefined) => {
   const user = useUser();
   return useQuery({
-    queryKey: ['tracks', user.user?.id],
+    queryKey: ['tracks', user.user?.id, memory],
     enabled: !!memory,
     queryFn: async () => {
       const [error, response] = await to(ky(`${env.baseUrl}/tracks/${memory}/${user.user?.id}`));
