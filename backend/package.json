@@ -1,0 +1,25 @@
+{
+  "name": "backend",
+  "scripts": {
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "dev": "bun run --hot src/index.ts"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.5.0",
+    "@libsql/client": "^0.15.5",
+    "@vercel/blob": "^1.0.1",
+    "album-art": "^4.0.0",
+    "await-to-ts": "^1.0.6",
+    "drizzle-orm": "^0.43.1",
+    "hono": "^4.7.9",
+    "ky": "^1.8.1",
+    "svix": "^1.65.0",
+    "ts-pattern": "^5.7.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "drizzle-kit": "^0.31.1"
+  }
+}

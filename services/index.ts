@@ -9,9 +9,12 @@ export const getToken = async () => {
   params.append('client_secret', env.clientSecret);
   params.append('client_id', env.clientId);
   const [error, response] = await to(
-    ky.post(`https://accounts.spotify.com/api/token`, {
-      body: params,
-    })
+    ky.post(
+      `https://accounts.spotify.com/api/token?grant_type=client_credentials&client_secret=${env.clientSecret}&client_id=${env.clientId}`,
+      {
+        body: params,
+      }
+    )
   );
   if (error instanceof HTTPError) {
     const err = await error.response.json();
@@ -25,5 +28,3 @@ export const getToken = async () => {
   }>();
   return data;
 };
-
-console.log(await getToken());

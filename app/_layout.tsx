@@ -1,12 +1,16 @@
 import '@/global.css';
+
+import { ClerkProvider } from '@clerk/clerk-expo';
+import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import { Theme, ThemeProvider, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { PortalHost } from '@rn-primitives/portal';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
 import { Platform } from 'react-native';
+import Toast from 'react-native-toast-message';
 
-import { Container } from '@/components/Container';
+import { Container } from '@/components/container';
 import { useColorScheme } from '@/hooks/use-color';
 import { NAV_THEME } from '@/lib/constants';
 import { AsyncProvider } from '@/providers/async-provider';
@@ -24,7 +28,7 @@ export { ErrorBoundary } from 'expo-router';
 
 export default function RootLayout() {
   const hasMounted = React.useRef(false);
-  const { colorScheme, isDarkColorScheme, setColorScheme } = useColorScheme();
+  const { isDarkColorScheme, setColorScheme } = useColorScheme();
   const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
 
   useIsomorphicLayoutEffect(() => {
@@ -48,19 +52,28 @@ export default function RootLayout() {
   }
 
   return (
-    <AsyncProvider>
-      <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-        <StatusBar style="auto" backgroundColor={isDarkColorScheme ? '#000' : '#fff'} />
-        <Container>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(home)" />
-            <Stack.Screen name="details" />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-        </Container>
-      </ThemeProvider>
-      <PortalHost />
-    </AsyncProvider>
+    <ClerkProvider tokenCache={tokenCache}>
+      <AsyncProvider>
+        <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+          <StatusBar style="auto" backgroundColor={isDarkColorScheme ? '#000' : '#fff'} />
+          <Container>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(home)" />
+              <Stack.Screen
+                name="memories"
+                options={{
+                  presentation: 'formSheet',
+                  animation: 'slide_from_bottom',
+                }}
+              />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </Container>
+        </ThemeProvider>
+        <PortalHost />
+      </AsyncProvider>
+      <Toast />
+    </ClerkProvider>
   );
 }
 

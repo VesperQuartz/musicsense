@@ -12,6 +12,27 @@
     "plugins": [
       "expo-router",
       [
+        "expo-font",
+        {
+          "fonts": [
+            "node_modules/@expo-google-fonts/inter/900Black/Inter_900Black.ttf"
+          ],
+          "android": {
+            "fonts": [
+              {
+                "fontFamily": "Inter_900Black",
+                "fontDefinitions": [
+                  {
+                    "path": "node_modules/@expo-google-fonts/inter/400Regular/Inter_400Regular.ttf",
+                    "weight": 400
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      [
         "expo-dev-launcher",
         {
           "launchMode": "most-recent"
@@ -24,7 +45,8 @@
           "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
           "isAccessMediaLocationEnabled": true
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true,

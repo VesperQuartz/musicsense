@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import to from 'await-to-ts';
 import * as MediaLibrary from 'expo-media-library';
+import MusicInfo from 'expo-music-info-2';
 import * as MusicLibrary from 'expo-music-library';
 
 export const useGetAudioPermision = () => {
@@ -95,6 +96,25 @@ export const useGetAllArtist = () => {
       const [error, genres] = await to(MusicLibrary.getArtistsAsync());
       if (error) throw new Error(error.message);
       return genres;
+    },
+  });
+};
+
+export const useGetAudioInfo = (fileUrl: string | undefined) => {
+  console.log(fileUrl, 'fileurl');
+  return useQuery({
+    queryKey: ['audio-info', fileUrl],
+    enabled: !!fileUrl,
+    queryFn: async () => {
+      //@ts-ignore
+      const info = await MusicInfo.getMusicInfoAsync(fileUrl, {
+        title: true,
+        artist: true,
+        album: true,
+        genre: true,
+        picture: true,
+      });
+      return info;
     },
   });
 };

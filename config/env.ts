@@ -1,10 +1,14 @@
 import z from 'zod';
 const envSchema = z.object({
-  clientId: z.string(),
+  baseUrl: z.string(),
   clientSecret: z.string(),
+  clientId: z.string(),
+  spotifyUrl: z.string(),
 });
 
 export const env = envSchema.parse({
-  clientId: process.env.CLIENT_ID,
-  clientSecret: process.env.CLIENT_SECRET,
+  baseUrl: process.env.EXPO_PUBLIC_API_URL,
+  clientSecret: process.env.EXPO_PUBLIC_CLIENT_SECRET,
+  clientId: process.env.EXPO_PUBLIC_CLIENT_ID,
+  spotifyUrl: process.env.EXPO_PUBLIC_SPOTIFY_URL,
 });
