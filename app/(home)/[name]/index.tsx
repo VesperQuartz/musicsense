@@ -1,6 +1,7 @@
 import { useUser } from '@clerk/clerk-expo';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import to from 'await-to-ts';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
@@ -12,6 +13,7 @@ import { AudioPro, AudioProContentType } from 'react-native-audio-pro';
 import Toast from 'react-native-toast-message';
 import { z } from 'zod';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -25,6 +27,7 @@ import { Text } from '@/components/ui/text';
 import { env } from '@/config/env';
 import { useGetUserTracks, useSearchAlbum } from '@/hooks/api';
 import { useGetAudioInfo } from '@/hooks/media';
+import { useAudioPlayerStore } from '@/store/audio-player';
 
 const formSchema = z.object({
   tags: z.string(),
@@ -40,6 +43,7 @@ const MemoryIndex = () => {
   const [loading, setLoading] = React.useState(false);
   const [tags, setTags] = React.useState('');
   const [query, setQuery] = useState('');
+  const queryClient = useQueryClient();
   const {
     control,
     handleSubmit,
@@ -112,6 +116,9 @@ const MemoryIndex = () => {
         text1: 'Audio has been uploaded',
       });
       reset();
+      queryClient.invalidateQueries({
+        queryKey: ['tracks', user.user?.id, name],
+      });
     }
   });
 
@@ -126,24 +133,29 @@ const MemoryIndex = () => {
 
   const filteredTracks =
     query && track.data
-      ? track.data.filter((t) => t.title.toLowerCase().includes(query.toLowerCase()))
+      ? track.data.filter((t) => {
+          const titleMatch = t.title.toLowerCase().includes(query.toLowerCase());
+          let tagsMatch = false;
+          if (t.tags) {
+            if (Array.isArray(t.tags)) {
+              tagsMatch = t.tags.some((tag: string) =>
+                tag.toLowerCase().includes(query.toLowerCase())
+              );
+            } else if (typeof t.tags === 'string') {
+              tagsMatch = t.tags.toLowerCase().includes(query.toLowerCase());
+            }
+          }
+          return titleMatch || tagsMatch;
+        })
       : track.data;
 
   return (
     <View className="flex-1 gap-2 p-1">
       <View className="flex gap-5">
-        <View className="flex flex-row gap-2">
-          <Ionicons name="musical-notes" size={30} color="white" />
-          <Text className="text-3xl">{name}</Text>
-        </View>
         <View className="flex flex-row items-center justify-between">
-          <View className="flex w-16 items-center justify-center rounded-3xl border border-white p-1">
-            <Button
-              variant="link"
-              size="icon"
-              onPress={() => track?.data?.[0] && AudioPro.play(track.data[0])}>
-              <Ionicons name="play-sharp" size={30} color="white" />
-            </Button>
+          <View className="flex flex-row gap-2">
+            <Ionicons name="musical-notes" size={30} color="white" />
+            <Text className="text-3xl">{name}</Text>
           </View>
           <View>
             <Dialog>
@@ -217,7 +229,7 @@ const MemoryIndex = () => {
         <Text className="mb-2 text-2xl font-bold text-white">Tracks</Text>
         {track.isLoading ? (
           <View className="flex flex-col gap-2">
-            {[1, 2, 3].map((i) => (
+            {[1, 2, 3, 4, 5].map((i) => (
               <View
                 key={i}
                 className="flex flex-row items-center gap-4 rounded-xl bg-neutral-900 p-4">
@@ -236,7 +248,12 @@ const MemoryIndex = () => {
             keyExtractor={(item) => item.id}
             className=""
             contentContainerClassName="gap-3 pb-8"
-            renderItem={({ item }) => <TrackListItem track={item} />}
+            renderItem={({ item, index }) => (
+              <TrackListItem
+                track={item}
+                onPress={() => useAudioPlayerStore.getState().setQueue(filteredTracks, index)}
+              />
+            )}
           />
         ) : (
           <View className="items-center justify-center py-8">
@@ -248,7 +265,7 @@ const MemoryIndex = () => {
   );
 };
 
-const TrackListItem = ({ track }: { track: any }) => (
+export const TrackListItem = ({ track, onPress }: { track: any; onPress: () => void }) => (
   <View className="flex flex-row items-center gap-4 rounded-xl bg-neutral-900 p-3">
     <View className="h-14 w-14 overflow-hidden rounded-lg bg-neutral-800">
       {track.artwork ? (
@@ -271,8 +288,22 @@ const TrackListItem = ({ track }: { track: any }) => (
       <Text className="text-xs text-neutral-500" numberOfLines={1}>
         {track.album}
       </Text>
+      {track.tags && (
+        <View className="mt-1 flex flex-row flex-wrap gap-1">
+          {(Array.isArray(track.tags)
+            ? track.tags
+            : typeof track.tags === 'string'
+              ? track.tags.split(',')
+              : []
+          ).map((tag: string, idx: number) => (
+            <Badge key={idx} variant="secondary">
+              <Text>{tag.trim()}</Text>
+            </Badge>
+          ))}
+        </View>
+      )}
     </View>
-    <Button variant="link" size="icon" onPress={() => AudioPro.play(track)} className="ml-2">
+    <Button variant="link" size="icon" onPress={onPress} className="ml-2">
       <Ionicons name="play-circle" size={32} color="#5C13B5" />
     </Button>
   </View>

@@ -1,0 +1,13 @@
+### Memories
+POST {{API_URL}}/api/memories
+Contnet-Type: application/json
+
+{
+  "userId": "user_2x8ZMpOapPjcErdoEzXh8GB6gLY",
+  "name": "June 2013",
+  "description": "The time is use to fly high"
+}
+
+### Get Memories
+GET {{API_URL}}/api/memories/user_2x8ZMpOapPjcErdoEzXh8GB6gLY
+Contnet-Type: application/json

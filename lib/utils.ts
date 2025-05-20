@@ -28,3 +28,28 @@ export const formatDate = (date: Date) => {
     day: 'numeric',
   }).format(date);
 };
+
+export const getFileExtension = (filename: string | undefined) => {
+  if (!filename || typeof filename !== 'string') {
+    return '';
+  }
+  const parts = filename.split('.');
+  if (parts.length <= 1 || (parts.length === 2 && parts[0] === '')) {
+    return '';
+  }
+  return parts[parts.length - 1].toLowerCase();
+};
+
+export const getFilenameWithoutExtension = (filename: string | undefined) => {
+  if (!filename || typeof filename !== 'string') {
+    return '';
+  }
+
+  const lastDotIndex = filename.lastIndexOf('.');
+
+  if (lastDotIndex === -1 || lastDotIndex === 0) {
+    return filename;
+  }
+
+  return filename.substring(0, lastDotIndex);
+};
