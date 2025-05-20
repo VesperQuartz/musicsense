@@ -57,7 +57,6 @@ const MemoryIndex = () => {
   const audioInfo = useGetAudioInfo(audio?.assets?.[0].uri);
   const albumArt = useSearchAlbum({ albumName: audioInfo?.data?.album });
   const track = useGetUserTracks(name as string);
-  console.log(track.data, 'Tracks');
 
   let upload: FileSystem.UploadTask;
   React.useEffect(() => {

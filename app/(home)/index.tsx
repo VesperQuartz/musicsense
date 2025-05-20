@@ -148,7 +148,7 @@ const Home = () => {
               </View>
             ) : memories.data && memories.data.length > 0 ? (
               <FlatList
-                contentContainerStyle={{ paddingBottom: 8, gap: 12 }}
+                contentContainerStyle={{ paddingBottom: 8, gap: 3 }}
                 data={memories.data}
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -159,7 +159,7 @@ const Home = () => {
                     </View>
                   </Link>
                 )}
-                keyExtractor={(item) => String(item.userId || item.name)}
+                keyExtractor={(item, index) => String(`${item.userId}+${index}` || item.name)}
               />
             ) : (
               <View className="flex items-center justify-center py-8">

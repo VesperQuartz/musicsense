@@ -37,7 +37,8 @@ export const useMediaPermissions = () => {
   };
 };
 
-export const useGetAssets = ({ limit = 20 }: { limit: number }) => {
+export const useGetAssets = ({ limit }: { limit: number }) => {
+  console.log(useGetFolderAssets({ id: '1000000643' }).data, 'ass');
   return useQuery({
     queryKey: ['assets', limit],
     queryFn: async () => {
@@ -49,14 +50,15 @@ export const useGetAssets = ({ limit = 20 }: { limit: number }) => {
       );
       if (error) throw new Error(error.message);
       const { assets } = data;
-      return assets
-        .filter((x) => getFileExtension(x.uri) !== 'flac')
-        .map((asset) => ({
+      return assets.map((asset) => {
+        // console.log(asset, 'asseta2');
+        return {
           ...asset,
           title: getFilenameWithoutExtension(asset.filename),
           artist: 'unknown',
           artwork: 'https://i.scdn.co/image/ab67616d0000b273ec449471d321ade6ee416230',
-        }));
+        };
+      });
     },
   });
 };
@@ -87,7 +89,11 @@ export const useGetFolderAssets = ({ id }: { id: string }) => {
   return useQuery({
     queryKey: ['folder', id],
     queryFn: async () => {
-      const [error, album] = await to(MusicLibrary.getAlbumAssetsAsync(id));
+      const [error, album] = await to(
+        MediaLibrary.getAssetInfoAsync(id, {
+          shouldDownloadFromNetwork: true,
+        })
+      );
       if (error) throw new Error(error.message);
       return album;
     },
