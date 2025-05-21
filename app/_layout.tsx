@@ -11,6 +11,7 @@ import { Platform } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { Container } from '@/components/container';
+import { env } from '@/config/env';
 import { useColorScheme } from '@/hooks/use-color';
 import { NAV_THEME } from '@/lib/constants';
 import { AsyncProvider } from '@/providers/async-provider';
@@ -52,7 +53,7 @@ export default function RootLayout() {
   }
 
   return (
-    <ClerkProvider tokenCache={tokenCache}>
+    <ClerkProvider tokenCache={tokenCache} publishableKey={env.publishKey}>
       <AsyncProvider>
         <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
           <StatusBar style="auto" backgroundColor={isDarkColorScheme ? '#000' : '#fff'} />
