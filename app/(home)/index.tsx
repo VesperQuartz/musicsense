@@ -247,7 +247,7 @@ const Home = () => {
   );
 };
 const MemoryCard = ({ memory }: { memory: any }) => (
-  <Card className="mr-2 h-48 w-36 overflow-hidden rounded-2xl border-0 bg-transparent p-0 shadow-lg">
+  <Card className="mr-2 min-h-36 w-36 overflow-hidden rounded-2xl border-0 bg-transparent p-0 shadow-lg">
     <LinearGradient
       colors={['#d946ef', '#ec4899', '#f43f5e']}
       start={{ x: 0, y: 0 }}

@@ -5,6 +5,7 @@ import { ActivityIndicator, View, FlatList, Image } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
+import { useAddToMemory, useGetUserMemoryCategories } from '@/hooks/api';
 import { useGetAssets, useMediaPermissions } from '@/hooks/media';
 import { useAudioPlayerStore } from '@/store/audio-player';
 
@@ -12,6 +13,9 @@ const Songs = () => {
   useMediaPermissions();
   const [query, setQuery] = useState('');
   const assets = useGetAssets({ limit: 2000 });
+
+  const categories = useGetUserMemoryCategories();
+  const addToMemory = useAddToMemory();
 
   const filteredAssets =
     query && assets.data

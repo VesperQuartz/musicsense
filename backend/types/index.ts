@@ -63,3 +63,4 @@ export const MomoryInsertSchema = createInsertSchema(memoriesTable);
 export type TrackSelect = typeof trackTable.$inferSelect;
 export type TrackInsert = typeof trackTable.$inferInsert;
 export const TrackInsertSchema = createInsertSchema(trackTable);
+export const TrackSelectSchema = createSelectSchema(trackTable);

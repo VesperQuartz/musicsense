@@ -5,17 +5,43 @@ import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
 import { env } from '../config/env';
 import { Webhook } from 'svix';
-import { HookEvent, MomoryInsertSchema, UserCreatedEventSchema } from '../types';
+import { HookEvent, MomoryInsertSchema, TrackInsertSchema, UserCreatedEventSchema } from '../types';
 import to from 'await-to-ts';
 import { UserRepo } from './repo/user';
 import { MusicRepo } from './repo/music';
 import { serveStatic } from 'hono/bun';
+import { genSongsAgent } from './agents';
 
 const app = new Hono()
   .use('*', logger())
   .use('*', poweredBy())
   .get('/static/*', serveStatic({ root: './' }))
   .basePath('/api');
+
+app.get(
+  '/categories/:userId',
+  zValidator(
+    'param',
+    z.object({
+      userId: z.string(),
+    })
+  ),
+  async (c) => {
+    const { userId } = c.req.valid('param');
+    const music = new MusicRepo();
+    const [error, result] = await to(music.getUserCategories(userId));
+    if (error) {
+      return c.json({ message: error.message }, 500);
+    }
+    const set = new Set(result);
+    return c.json(Array.from(set));
+  }
+);
+
+app.get('/ai/mood', async (c) => {
+  const [error, result] = await to(genSongsAgent('sad'));
+  return c.json(result);
+});
 
 app.post('/memories', zValidator('json', MomoryInsertSchema), async (c) => {
   const data = c.req.valid('json');
@@ -45,6 +71,16 @@ app.get(
     return c.json(memories);
   }
 );
+
+app.post('/memories/track', zValidator('json', TrackInsertSchema), async (c) => {
+  const data = c.req.valid('json');
+  const memory = new MusicRepo();
+  const [error, memories] = await to(memory.uploadTrack({ ...data, type: 'local' }));
+  if (error) {
+    return c.json({ message: error.message }, 500);
+  }
+  return c.json(memories);
+});
 
 app.get(
   '/tracks/:memory/:userId',
@@ -103,7 +139,6 @@ app.post('/upload', async (c) => {
       artwork: payload.albumArt,
       duration: payload.duration,
       tags: payload.tags.split(',').map((x) => x.trim()),
-      date: new Date().toISOString(),
     })
   );
   if (error) throw new Error(error.message);
@@ -161,4 +196,7 @@ app.post(
   }
 );
 
-export default app;
+export default {
+  fetch: app.fetch,
+  idleTimeout: 60,
+};

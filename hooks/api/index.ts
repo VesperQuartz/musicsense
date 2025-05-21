@@ -6,6 +6,7 @@ import ky, { HTTPError } from 'ky';
 import { env } from '@/config/env';
 import { getToken } from '@/services';
 import { useTokenStore } from '@/store/store';
+import { Track } from '@/types';
 
 type Memory = {
   userId: string | undefined;
@@ -87,7 +88,6 @@ export const useSearchAlbum = ({ albumName }: { albumName: string | undefined })
       );
       if (error instanceof HTTPError) {
         const err = await error.response.json();
-        console.log(error, 'E', error.response.status === 400);
         if (error.response.status === 401 || error.response.status === 400) {
           const [tError, token] = await to(getToken());
           if (tError) {
@@ -120,6 +120,40 @@ export const useGetUserTracks = (memory: string | undefined) => {
         throw new Error(err.message);
       }
       return response.json<Tracks[]>();
+    },
+  });
+};
+
+export const useGetUserMemoryCategories = () => {
+  const user = useUser();
+  return useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const [error, response] = await to(ky(`${env.baseUrl}/categories/${user.user?.id}`));
+      if (error instanceof HTTPError) {
+        const err = await error.response.json();
+        throw new Error(err.message);
+      }
+      return response.json<string[]>();
+    },
+  });
+};
+
+export const useAddToMemory = () => {
+  const user = useUser();
+  return useMutation({
+    mutationKey: ['add-to-memory', user.user?.id],
+    mutationFn: async (data: Track) => {
+      const [error, response] = await to(
+        ky.post(`${env.baseUrl}/memories/track`, {
+          json: data,
+        })
+      );
+      if (error instanceof HTTPError) {
+        const err = await error.response.json();
+        throw new Error(err.message);
+      }
+      return response.json<string[]>();
     },
   });
 };

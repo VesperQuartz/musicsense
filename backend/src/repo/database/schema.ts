@@ -37,7 +37,6 @@ export const trackTable = sqliteTable('tracks', {
   artist: text().notNull(),
   album: text().default('unknown'),
   genre: text().default('unknown'),
-  date: text().notNull(),
   artwork: text(),
   duration: numeric(),
   tags: text({ mode: 'json' }).$type<string[]>(),

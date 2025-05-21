@@ -68,7 +68,7 @@
       "bundleIdentifier": "com.mrlectus.musicsense"
     },
     "android": {
-      "edgeToEdgeEnabled": true,
+      "edgeToEdgeEnabled": false,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
