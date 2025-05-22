@@ -33,15 +33,29 @@ app.get(
     if (error) {
       return c.json({ message: error.message }, 500);
     }
+    console.log(result);
     const set = new Set(result);
     return c.json(Array.from(set));
   }
 );
 
-app.get('/ai/mood', async (c) => {
-  const [error, result] = await to(genSongsAgent('sad'));
-  return c.json(result);
-});
+app.post(
+  '/ai/mood',
+  zValidator(
+    'json',
+    z.object({
+      mood: z.string(),
+    })
+  ),
+  async (c) => {
+    const { mood } = c.req.valid('json');
+    const [error, result] = await to(genSongsAgent(mood));
+    if (error) {
+      return c.json({ message: error.message }, 500);
+    }
+    return c.json(result);
+  }
+);
 
 app.post('/memories', zValidator('json', MomoryInsertSchema), async (c) => {
   const data = c.req.valid('json');
@@ -75,8 +89,11 @@ app.get(
 app.post('/memories/track', zValidator('json', TrackInsertSchema), async (c) => {
   const data = c.req.valid('json');
   const memory = new MusicRepo();
-  const [error, memories] = await to(memory.uploadTrack({ ...data, type: 'local' }));
+  const [error, memories] = await to(
+    memory.uploadTrack({ ...data, type: 'local', tags: data.tags })
+  );
   if (error) {
+    console.log(error, 'QW');
     return c.json({ message: error.message }, 500);
   }
   return c.json(memories);
@@ -167,7 +184,6 @@ app.post(
       'svix-signature': header['svix-signature'],
     };
     let event = null;
-    console.log('payload', payload);
     try {
       event = wh.verify(payload, headerPayload) as HookEvent;
       if (event.type === 'user.created') {
@@ -189,7 +205,6 @@ app.post(
       }
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
         return c.json({ message: error.message }, 500);
       }
     }
@@ -198,5 +213,5 @@ app.post(
 
 export default {
   fetch: app.fetch,
-  idleTimeout: 60,
+  idleTimeout: 120,
 };

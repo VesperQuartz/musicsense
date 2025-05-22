@@ -36,10 +36,10 @@ export class MusicRepo implements IMusicRepo {
 
   async getUserCategories(userId: string): Promise<Array<string> | null> {
     const [error, categories] = await to(
-      db.select().from(trackTable).where(eq(trackTable.userId, userId))
+      db.select().from(memoriesTable).where(eq(memoriesTable.userId, userId))
     );
     if (error) throw new Error(error.message);
-    return categories.map((x) => x.memory);
+    return categories.map((x) => x.name);
   }
 
   async getUserTracks(userId: string, memory: string): Promise<TrackSelect[] | null> {

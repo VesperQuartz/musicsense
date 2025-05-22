@@ -3,7 +3,6 @@ import { useAudioPlayerStore } from '@/store/audio-player';
 
 // Set up event listeners outside React components!
 AudioPro.addEventListener((event) => {
-  console.log('AudioPro event:', event);
   if (event.type === AudioProEventType.TRACK_ENDED) {
     useAudioPlayerStore.getState().playNextTrack();
   }

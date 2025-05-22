@@ -60,13 +60,6 @@ export default function RootLayout() {
           <Container>
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen name="(home)" />
-              <Stack.Screen
-                name="memories"
-                options={{
-                  presentation: 'formSheet',
-                  animation: 'slide_from_bottom',
-                }}
-              />
               <Stack.Screen name="+not-found" />
             </Stack>
           </Container>

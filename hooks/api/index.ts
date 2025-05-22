@@ -72,7 +72,6 @@ export const useGetMemories = (query?: string) => {
 
 export const useSearchAlbum = ({ albumName }: { albumName: string | undefined }) => {
   const { access_token, setToken } = useTokenStore();
-  console.log(access_token, 'TOK');
   return useQuery({
     queryKey: ['album-art', access_token, albumName],
     enabled: !!albumName,
@@ -91,7 +90,6 @@ export const useSearchAlbum = ({ albumName }: { albumName: string | undefined })
         if (error.response.status === 401 || error.response.status === 400) {
           const [tError, token] = await to(getToken());
           if (tError) {
-            console.log(tError, 'TERROR');
           }
           setToken(token.access_token);
         } else {
@@ -151,9 +149,30 @@ export const useAddToMemory = () => {
       );
       if (error instanceof HTTPError) {
         const err = await error.response.json();
+        console.log(JSON.stringify(err), 'KLL');
         throw new Error(err.message);
       }
       return response.json<string[]>();
+    },
+  });
+};
+
+export const useAiSuggestion = () => {
+  return useMutation({
+    mutationKey: ['ai-suggestion'],
+    mutationFn: async ({ mood }: { mood: string }) => {
+      const [error, response] = await to(
+        ky.post(`${env.baseUrl}/ai/mood`, {
+          json: { mood },
+          timeout: false,
+        })
+      );
+      console.log(error, 'EEE');
+      if (error instanceof HTTPError) {
+        const err = await error.response.json();
+        throw new Error(err.message);
+      }
+      return response.json<Tracks[]>();
     },
   });
 };

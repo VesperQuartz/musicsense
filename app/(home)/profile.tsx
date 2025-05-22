@@ -1,10 +1,11 @@
-import { View } from 'react-native';
 import { useUser, useAuth } from '@clerk/clerk-expo';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Text } from '@/components/ui/text';
-import { Button } from '@/components/ui/button';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
+import { View } from 'react-native';
+
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Text } from '@/components/ui/text';
 
 const Profile = () => {
   const { user } = useUser();

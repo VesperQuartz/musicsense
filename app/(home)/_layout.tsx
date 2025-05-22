@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Home, Search, Library, User } from 'lucide-react-native';
+import { Home, Library, User } from 'lucide-react-native';
 import '@/services/audio-setup';
 
 import MiniPlayer from '@/components/mini-player';
@@ -28,13 +28,6 @@ const HomeLayout = () => {
           options={{
             title: 'Home',
             tabBarIcon: ({ color, size }) => <Home size={size} color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="search"
-          options={{
-            title: 'Search',
-            tabBarIcon: ({ color, size }) => <Search size={size} color={color} />,
           }}
         />
         <Tabs.Screen

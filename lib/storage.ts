@@ -7,12 +7,10 @@ export const storage = new MMKV({
 
 export const mmkvStorage: StateStorage = {
   getItem: (name: string): Promise<string | null> => {
-    console.log(name, 'GET');
     const value = storage.getString(name);
     return value ? Promise.resolve(value) : Promise.resolve(null);
   },
   setItem: (name: string, value: string): Promise<void> => {
-    console.log(name, value, 'SET');
     storage.set(name, value);
     return Promise.resolve();
   },

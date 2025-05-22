@@ -14,7 +14,6 @@ export const useMediaPermissions = () => {
     queryKey: ['media-permissions'],
     queryFn: async () => {
       const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
-      console.log('Media Library Permission:', mediaLibraryPermission.status);
       const status = {
         mediaLibrary: mediaLibraryPermission.status === 'granted',
       };
@@ -38,7 +37,6 @@ export const useMediaPermissions = () => {
 };
 
 export const useGetAssets = ({ limit }: { limit: number }) => {
-  console.log(useGetFolderAssets({ id: '1000000643' }).data, 'ass');
   return useQuery({
     queryKey: ['assets', limit],
     queryFn: async () => {
@@ -51,7 +49,6 @@ export const useGetAssets = ({ limit }: { limit: number }) => {
       if (error) throw new Error(error.message);
       const { assets } = data;
       return assets.map((asset) => {
-        // console.log(asset, 'asseta2');
         return {
           ...asset,
           title: getFilenameWithoutExtension(asset.filename),
@@ -133,7 +130,6 @@ export const useGetAllArtist = () => {
 };
 
 export const useGetAudioInfo = (fileUrl: string | undefined) => {
-  console.log(fileUrl, 'fileurl');
   return useQuery({
     queryKey: ['audio-info', fileUrl],
     enabled: !!fileUrl,

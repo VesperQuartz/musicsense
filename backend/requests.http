@@ -11,3 +11,13 @@ Contnet-Type: application/json
 ### Get Memories
 GET {{API_URL}}/api/memories/user_2x8ZMpOapPjcErdoEzXh8GB6gLY
 Contnet-Type: application/json
+
+
+### Get Catggories
+GET {{API_URL}}/api/categories/user_2xKbylWOLYZM6jzSmQuTjqFI15F
+Contnet-Type: application/json
+
+
+### Get Catggories
+GET {{API_URL}}/api/categories/user_2x8ZMpOapPjcErdoEzXh8GB6gLY
+Contnet-Type: application/json

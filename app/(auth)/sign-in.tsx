@@ -28,18 +28,16 @@ const SignInPage = () => {
 
   const handleGoogleSignIn = async () => {
     try {
-      const { createdSessionId, setActive, authSessionResult } = await startSSOFlow({
+      const { createdSessionId, setActive } = await startSSOFlow({
         strategy: 'oauth_google',
         redirectUrl: AuthSession.makeRedirectUri({
           path: '/',
           scheme: 'musicsense',
         }),
       });
-      console.log(authSessionResult, 'AuthSession');
       if (createdSessionId) {
         await setActive!({ session: createdSessionId });
       } else {
-        console.log(authSessionResult, 'RESULT');
       }
     } catch (error) {
       console.error(JSON.stringify(error, null, 2));

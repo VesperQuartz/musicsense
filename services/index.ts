@@ -18,7 +18,6 @@ export const getToken = async () => {
   );
   if (error instanceof HTTPError) {
     const err = await error.response.json();
-    console.log(err, 'HTTPError');
     throw new Error(err);
   }
   const data = response.json<{

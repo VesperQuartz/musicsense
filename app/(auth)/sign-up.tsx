@@ -30,7 +30,6 @@ const SignUpPage = () => {
         strategy: 'oauth_google',
         redirectUrl: AuthSession.makeRedirectUri(),
       });
-      console.log('payload', createdSessionId);
       await setActive!({ session: createdSessionId });
     } catch (error) {
       console.log(error, 'Flow');

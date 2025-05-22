@@ -1,10 +1,14 @@
+import { useUser } from '@clerk/clerk-expo';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import React, { useState } from 'react';
-import { ActivityIndicator, View, FlatList, Image, Pressable, ToastAndroid } from 'react-native';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
-import { useForm, Controller } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
+import React, { useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { ActivityIndicator, View, FlatList, Image, Pressable } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Toast from 'react-native-toast-message';
+import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,13 +16,10 @@ import { Text } from '@/components/ui/text';
 import { useAddToMemory, useGetUserMemoryCategories } from '@/hooks/api';
 import { useGetAssets, useMediaPermissions } from '@/hooks/media';
 import { useAudioPlayerStore } from '@/store/audio-player';
-import { useUser } from '@clerk/clerk-expo';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Toast from 'react-native-toast-message';
-import { useQueryClient } from '@tanstack/react-query';
 
 const formSchema = z.object({
   memory: z.string().min(1, { message: 'Please select a memory' }),
+  tags: z.string().optional(),
 });
 
 const Songs = () => {
@@ -28,7 +29,7 @@ const Songs = () => {
   const [selectedTrack, setSelectedTrack] = useState<any>(null);
   const assets = useGetAssets({ limit: 2000 });
   const bottomSheetRef = React.useRef<BottomSheet>(null);
-  const snapPoints = React.useMemo(() => ['25%'], []);
+  const snapPoints = React.useMemo(() => ['40%', '55'], []);
   const queryClient = useQueryClient();
 
   const categories = useGetUserMemoryCategories();
@@ -66,6 +67,7 @@ const Songs = () => {
       memory: data.memory,
       userId: user?.id ?? '',
       type: 'local',
+      tags: data.tags ? data.tags.split(',').map((tag) => tag.trim()) : [],
     };
 
     addToMemory.mutate(trackData, {
@@ -81,8 +83,7 @@ const Songs = () => {
         setSelectedTrack(null);
         reset();
       },
-      onError: (error) => {
-        console.log(error, 'EE');
+      onError: () => {
         Toast.show({
           text1: 'Error adding song to memory',
           type: 'error',
@@ -204,6 +205,28 @@ const Songs = () => {
                 <Text className="mt-1 text-sm text-red-500">{errors.memory.message}</Text>
               )}
             </View>
+
+            <View className="mb-4">
+              <Controller
+                control={control}
+                rules={{ required: false }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View>
+                    <Text className="mb-2 text-sm text-white">Tags (optional)</Text>
+                    <Input
+                      placeholder="comma, separated, tags"
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      className="focus:border-[#5C13B5]"
+                      placeholderTextColor="#aaa"
+                    />
+                  </View>
+                )}
+                name="tags"
+              />
+            </View>
+
             <Button
               className="flex flex-row items-center justify-center rounded-lg bg-[#5C13B5] py-3"
               onPress={onSubmit}>
