@@ -35,9 +35,10 @@ export const genSongsAgent = async (mood: string) => {
       analyze the songs provided to you in tools, and return at most 5 songs that best match the mood.
     `,
   });
-  console.log(response.toolResults, 'TOOLR');
-  console.log(response.text, 'TOOLx');
   console.log(response.experimental_output, 'ExTOOLx');
+  console.log(response.text, 'TOOLx');
+  const obj = JSON.parse(response.text);
+  const keys = Object.keys(JSON.parse(response.text));
   //@ts-ignore
-  return JSON.parse(response.text === '' ? '[]' : response.text).items;
+  return obj[keys[0]];
 };
