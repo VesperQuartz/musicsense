@@ -16,7 +16,6 @@ const getSongsTool = {
       console.error(error, 'ERR');
       throw new Error(error.message);
     }
-    console.log(tracks, 'TRACKS');
     return tracks;
   },
 };
@@ -25,9 +24,14 @@ export const genSongsAgent = async (mood: string) => {
   const response = await generateText({
     model: openai('gpt-4.1'),
     prompt: `based on the Mood: '${mood}' give me 5 or less songs to listen to`,
-    maxSteps: 3,
+    maxSteps: 2,
     experimental_output: Output.object({
-      schema: z.array(TrackSelectSchema).describe('resulting array of tracks'),
+      schema: z
+        .object({
+          type: z.string(),
+          items: z.array(TrackSelectSchema),
+        })
+        .describe('resulting array of tracks'),
     }),
     tools: {
       getSongs: tool(getSongsTool),
@@ -37,10 +41,5 @@ export const genSongsAgent = async (mood: string) => {
       analyze the songs provided to you in tools, and return at most 5 songs that best match the mood.
     `,
   });
-  console.log(response.experimental_output, 'ExTOOLx');
-  console.log(response.text, 'TOOLx');
-  const obj = JSON.parse(response.text);
-  const keys = Object.keys(JSON.parse(response.text));
-  //@ts-ignore
-  return obj[keys[0]];
+  return response.experimental_output.items ?? [];
 };

@@ -149,7 +149,6 @@ export const useAddToMemory = () => {
       );
       if (error instanceof HTTPError) {
         const err = await error.response.json();
-        console.log(JSON.stringify(err), 'KLL');
         throw new Error(err.message);
       }
       return response.json<string[]>();
@@ -167,7 +166,6 @@ export const useAiSuggestion = () => {
           timeout: false,
         })
       );
-      console.log(error, 'EEE');
       if (error instanceof HTTPError) {
         const err = await error.response.json();
         throw new Error(err.message);

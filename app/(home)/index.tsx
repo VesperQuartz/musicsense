@@ -188,8 +188,9 @@ const Home = () => {
   const handleAddTrackSubmit = async (data: z.infer<typeof addTrackFormSchema>) => {
     if (!selectedSuggestedTrack) return;
 
+    const { id, createdAt, updatedAt, ...rest } = selectedSuggestedTrack;
     const trackData = {
-      ...selectedSuggestedTrack,
+      ...rest,
       memory: data.memory,
       userId: user?.id ?? '',
       type: selectedSuggestedTrack.type || 'ai',
@@ -211,7 +212,6 @@ const Home = () => {
         setSelectedSuggestedTrack(null);
       },
       onError: (error) => {
-        console.log(error, 'Add track error');
         Toast.show({
           text1: 'Error adding track to memory',
           type: 'error',
@@ -229,7 +229,6 @@ const Home = () => {
           aiSuggestionBottomSheetRef.current?.close();
         },
         onError: (error) => {
-          console.log(error, 'AI Suggestion error');
           Toast.show({
             text1: 'Error fetching suggestions',
             type: 'error',
@@ -290,7 +289,7 @@ const Home = () => {
               />
             </View>
 
-            <View className="flex-1">
+            <View className="">
               {memories.isLoading ? (
                 <View className="flex flex-row gap-2">
                   <Skeleton className="h-44 w-36 rounded-xl" />
@@ -299,7 +298,7 @@ const Home = () => {
                 </View>
               ) : memories.data && memories.data.length > 0 ? (
                 <FlatList
-                  contentContainerStyle={{ paddingBottom: 8, gap: 3 }}
+                  contentContainerStyle={{ flex: 1, paddingTop: 10, paddingHorizontal: 10 }}
                   data={memories.data}
                   horizontal
                   showsHorizontalScrollIndicator={false}
@@ -313,16 +312,16 @@ const Home = () => {
                   keyExtractor={(item, index) => String(`${item.userId}+${index}` || item.name)}
                 />
               ) : (
-                <View className="flex items-center justify-center py-8">
+                <View className="flex items-center justify-center py-4">
                   <Text className="text-white/70">No memories found</Text>
                 </View>
               )}
             </View>
 
             {memories.data && memories.data.length > 0 && (
-              <View className="mt-2 flex-1">
+              <View className="mt-1 flex flex-1">
                 {ai.isSuccess && ai.data && ai.data.length > 0 && (
-                  <View className="mt-4 flex-1">
+                  <View className="mt-2 flex-1">
                     <Text className="mb-2 text-xl font-bold text-white">AI Suggested Tracks</Text>
                     <FlatList
                       data={ai.data}
@@ -346,7 +345,7 @@ const Home = () => {
                 )}
 
                 {ai.isSuccess && (!ai.data || ai.data.length === 0) && (
-                  <View className="items-center justify-center py-8">
+                  <View className="items-center justify-center py-4">
                     <Text className="text-lg text-neutral-400">
                       No suggestions found for this mood.
                     </Text>
@@ -354,7 +353,7 @@ const Home = () => {
                 )}
 
                 {ai.isError && (
-                  <View className="items-center justify-center py-8">
+                  <View className="items-center justify-center py-4">
                     <Text className="text-lg text-red-500">Error fetching suggestions.</Text>
                   </View>
                 )}

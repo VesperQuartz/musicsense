@@ -31,9 +31,9 @@ app.get(
     const music = new MusicRepo();
     const [error, result] = await to(music.getUserCategories(userId));
     if (error) {
+      console.error(error, 'categories|userId');
       return c.json({ message: error.message }, 500);
     }
-    console.log(result);
     const set = new Set(result);
     return c.json(Array.from(set));
   }
@@ -51,6 +51,7 @@ app.post(
     const { mood } = c.req.valid('json');
     const [error, result] = await to(genSongsAgent(mood));
     if (error) {
+      console.error(error, 'ai|mood');
       return c.json({ message: error.message }, 500);
     }
     return c.json(result);
@@ -62,6 +63,7 @@ app.post('/memories', zValidator('json', MomoryInsertSchema), async (c) => {
   const memory = new MusicRepo();
   const [error, memories] = await to(memory.save(data));
   if (error) {
+    console.error(error, 'memories');
     return c.json({ message: error.message }, 500);
   }
   return c.json(memories, 201);
@@ -80,6 +82,7 @@ app.get(
     const memory = new MusicRepo();
     const [error, memories] = await to(memory.getUserMemories(userId));
     if (error) {
+      console.error(error, 'memories|userId');
       return c.json({ message: error.message }, 500);
     }
     return c.json(memories);
@@ -90,10 +93,11 @@ app.post('/memories/track', zValidator('json', TrackInsertSchema), async (c) => 
   const data = c.req.valid('json');
   const memory = new MusicRepo();
   const [error, memories] = await to(
-    memory.uploadTrack({ ...data, type: 'local', tags: data.tags })
+    //@ts-ignore
+    memory.uploadTrack({ ...data, type: data.type, tags: data.tags })
   );
   if (error) {
-    console.log(error, 'QW');
+    console.error(error, 'memories|track');
     return c.json({ message: error.message }, 500);
   }
   return c.json(memories);
@@ -113,6 +117,7 @@ app.get(
     const tracks = new MusicRepo();
     const [error, uTracks] = await to(tracks.getUserTracks(userId, memory));
     if (error) {
+      console.error(error, 'tracks|memory|userId');
       return c.json({ message: error.message }, 500);
     }
     return c.json(uTracks);
@@ -158,7 +163,10 @@ app.post('/upload', async (c) => {
       tags: payload.tags.split(',').map((x) => x.trim()),
     })
   );
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error(error, 'upload');
+    throw new Error(error.message);
+  }
   return c.json({ message: 'music uploaded successfully', path: `${env.apiUrl}/${path}` }, 201);
 });
 

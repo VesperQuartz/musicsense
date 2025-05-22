@@ -62,5 +62,11 @@ export const MomoryInsertSchema = createInsertSchema(memoriesTable);
 
 export type TrackSelect = typeof trackTable.$inferSelect;
 export type TrackInsert = typeof trackTable.$inferInsert;
-export const TrackInsertSchema = createInsertSchema(trackTable);
-export const TrackSelectSchema = createSelectSchema(trackTable);
+export const TrackInsertSchema = createInsertSchema(trackTable, {
+  createdAt: z.coerce.date().optional(),
+  updateAt: z.coerce.date().optional(),
+});
+export const TrackSelectSchema = createSelectSchema(trackTable, {
+  createdAt: z.coerce.date(),
+  updateAt: z.coerce.date(),
+});
