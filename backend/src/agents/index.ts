@@ -13,15 +13,17 @@ const getSongsTool = {
     const music = new MusicRepo();
     const [error, tracks] = await to(music.getRemoteTracks());
     if (error) {
+      console.error(error, 'ERR');
       throw new Error(error.message);
     }
+    console.log(tracks, 'TRACKS');
     return tracks;
   },
 };
 
 export const genSongsAgent = async (mood: string) => {
   const response = await generateText({
-    model: openai('gpt-4-turbo'),
+    model: openai('gpt-4.1'),
     prompt: `based on the Mood: '${mood}' give me 5 or less songs to listen to`,
     maxSteps: 3,
     experimental_output: Output.object({
