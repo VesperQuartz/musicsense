@@ -298,7 +298,7 @@ const Home = () => {
                 </View>
               ) : memories.data && memories.data.length > 0 ? (
                 <FlatList
-                  contentContainerStyle={{ flex: 1, paddingTop: 10, paddingHorizontal: 10 }}
+                  contentContainerStyle={{ paddingTop: 6, paddingHorizontal: 8 }}
                   data={memories.data}
                   horizontal
                   showsHorizontalScrollIndicator={false}
