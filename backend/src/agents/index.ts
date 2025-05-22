@@ -22,10 +22,10 @@ const getSongsTool = {
 export const genSongsAgent = async (mood: string) => {
   const response = await generateText({
     model: openai('gpt-4-turbo'),
-    prompt: `based on the Mood: ${mood} give me 5 or less songs to listen to`,
+    prompt: `based on the Mood: '${mood}' give me 5 or less songs to listen to`,
     maxSteps: 3,
     experimental_output: Output.object({
-      schema: z.array(TrackSelectSchema).min(0).max(5).describe('resulting array of tracks'),
+      schema: z.array(TrackSelectSchema).describe('resulting array of tracks'),
     }),
     tools: {
       getSongs: tool(getSongsTool),
