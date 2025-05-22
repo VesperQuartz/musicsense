@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Image, TouchableOpacity } from 'react-native';
+import { Image, TouchableOpacity } from 'react-native';
+
 import { Text } from '@/components/ui/text';
 
 interface PlaylistCardProps {

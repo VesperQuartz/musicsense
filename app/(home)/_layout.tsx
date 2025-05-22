@@ -1,10 +1,17 @@
-import { Tabs } from 'expo-router';
+import { useAuth } from '@clerk/clerk-expo';
+import { Redirect, Tabs } from 'expo-router';
 import { Home, Library, User } from 'lucide-react-native';
 import '@/services/audio-setup';
 
 import MiniPlayer from '@/components/mini-player';
 
 const HomeLayout = () => {
+  const { isSignedIn } = useAuth();
+
+  if (!isSignedIn) {
+    return <Redirect href="/(session)/sign-in" />;
+  }
+
   return (
     <>
       <Tabs

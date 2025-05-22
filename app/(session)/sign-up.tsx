@@ -13,13 +13,17 @@ import MusicWaveAnimation from '@/components/wavy';
 
 WebBrowser.maybeCompleteAuthSession();
 
-const SignUpPage = () => {
+export const useWarmUp = () => {
   React.useEffect(() => {
     void WebBrowser.warmUpAsync();
     return () => {
       void WebBrowser.coolDownAsync();
     };
   }, []);
+};
+
+const SignUpPage = () => {
+  useWarmUp();
   const { startSSOFlow } = useSSO();
   const { isLoaded } = useSignIn();
   if (!isLoaded) return;
@@ -28,11 +32,17 @@ const SignUpPage = () => {
     try {
       const { createdSessionId, setActive } = await startSSOFlow({
         strategy: 'oauth_google',
-        redirectUrl: AuthSession.makeRedirectUri(),
+        redirectUrl: AuthSession.makeRedirectUri({
+          path: '/',
+          scheme: 'musicsense',
+        }),
       });
-      await setActive!({ session: createdSessionId });
+      if (createdSessionId) {
+        await setActive!({ session: createdSessionId });
+      } else {
+      }
     } catch (error) {
-      console.log(error, 'Flow');
+      console.error(JSON.stringify(error, null, 2));
     }
   };
 
@@ -63,6 +73,7 @@ const SignUpPage = () => {
     </>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

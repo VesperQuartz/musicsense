@@ -81,7 +81,6 @@ const Home = () => {
     control: aiSuggestionFormControl,
     handleSubmit: handleAiSuggestionSubmitForm,
     formState: { errors: aiSuggestionFormErrors },
-    reset: resetAiSuggestionForm,
     setValue: setAiSuggestionFormValue,
   } = useForm({
     resolver: zodResolver(aiSuggestionFormSchema),
@@ -95,7 +94,6 @@ const Home = () => {
     handleSubmit: handleAddTrackSubmitForm,
     formState: { errors: addTrackFormErrors },
     reset: resetAddTrackForm,
-    setValue: setAddTrackFormValue,
   } = useForm({
     resolver: zodResolver(addTrackFormSchema),
     defaultValues: {

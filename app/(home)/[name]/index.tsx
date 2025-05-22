@@ -9,13 +9,13 @@ import * as FileSystem from 'expo-file-system';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { ActivityIndicator, View, FlatList, Image } from 'react-native';
+import { ActivityIndicator, View, FlatList } from 'react-native';
 import { AudioPro, AudioProContentType } from 'react-native-audio-pro';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import { z } from 'zod';
 
-import { Badge } from '@/components/ui/badge';
+import { TrackListItem } from '@/components/track-list-item';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
@@ -23,7 +23,6 @@ import { env } from '@/config/env';
 import { useGetUserTracks, useSearchAlbum } from '@/hooks/api';
 import { useGetAudioInfo } from '@/hooks/media';
 import { useAudioPlayerStore } from '@/store/audio-player';
-import { TrackListItem } from '@/components/track-list-item';
 
 const formSchema = z.object({
   tags: z.string(),
