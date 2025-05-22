@@ -23,9 +23,9 @@ export const genSongsAgent = async (mood: string) => {
   const response = await generateText({
     model: openai('gpt-4-turbo'),
     prompt: `based on the Mood: ${mood} give me 5 or less songs to listen to`,
-    maxSteps: 2,
+    maxSteps: 3,
     experimental_output: Output.object({
-      schema: z.array(TrackSelectSchema).describe('five or songs to match the mood'),
+      schema: z.array(TrackSelectSchema).min(0).max(5).describe('resulting array of tracks'),
     }),
     tools: {
       getSongs: tool(getSongsTool),
@@ -35,6 +35,9 @@ export const genSongsAgent = async (mood: string) => {
       analyze the songs provided to you in tools, and return at most 5 songs that best match the mood.
     `,
   });
+  console.log(response.toolResults, 'TOOLR');
+  console.log(response.text, 'TOOLx');
+  console.log(response.experimental_output, 'ExTOOLx');
   //@ts-ignore
   return JSON.parse(response.text === '' ? '[]' : response.text).items;
 };
