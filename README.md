@@ -1,3 +1,8 @@
+
+
+https://github.com/user-attachments/assets/203f632a-e6d3-4806-a18b-ae23e40fb02a
+
+
 # MusicSense
 
 MusicSense is a modern music application that helps you organize and discover music based on your memories and moods. Built with React Native and Expo, it offers a seamless experience for managing your music collection and getting AI-powered music suggestions.
