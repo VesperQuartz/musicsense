@@ -41,5 +41,6 @@ export const genSongsAgent = async (mood: string) => {
       analyze the songs provided to you in tools, and return at most 5 songs that best match the mood.
     `,
   });
+  console.log(response.experimental_output.items);
   return response.experimental_output.items ?? [];
 };
