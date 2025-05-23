@@ -29,7 +29,7 @@ export const genSongsAgent = async (mood: string) => {
       schema: z
         .object({
           type: z.string(),
-          items: z.array(TrackSelectSchema),
+          items: z.array(z.any()),
         })
         .describe('resulting array of tracks'),
     }),
