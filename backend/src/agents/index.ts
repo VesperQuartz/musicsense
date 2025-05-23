@@ -13,7 +13,7 @@ const getSongsTool = {
     const music = new MusicRepo();
     const [error, tracks] = await to(music.getRemoteTracks());
     if (error) {
-      console.error(error, 'ERR');
+      console.error('Error fetching songs:', error);
       throw new Error(error.message);
     }
     return tracks;

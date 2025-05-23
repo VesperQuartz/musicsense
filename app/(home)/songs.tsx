@@ -62,8 +62,9 @@ const Songs = () => {
   const onSubmit = handleSubmit(async (data) => {
     if (!selectedTrack) return;
 
+    const { id, createdAt, updatedAt, ...rest } = selectedTrack;
     const trackData = {
-      ...selectedTrack,
+      ...rest,
       memory: data.memory,
       userId: user?.id ?? '',
       type: 'local',

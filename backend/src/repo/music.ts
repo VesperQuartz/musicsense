@@ -57,6 +57,7 @@ export class MusicRepo implements IMusicRepo {
     const [error, track] = await to(
       db.select().from(trackTable).where(eq(trackTable.type, 'remote'))
     );
+    console.log(error, 'remote tracks');
     if (error) throw new Error(error.message);
     return track;
   }
