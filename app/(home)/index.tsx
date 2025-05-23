@@ -336,7 +336,31 @@ const Home = () => {
                           }}>
                           <TrackListItem
                             track={item}
-                            onPress={() => useAudioPlayerStore.getState().setQueue(ai.data!, index)}
+                            onPress={() => {
+                              const trackWithRequiredFields = {
+                                ...item,
+                                memory: item.memory || 'AI Suggestions',
+                                type: item.type || 'remote',
+                                userId: user?.id || '',
+                                tags: item.tags || [],
+                                album: item.album || 'Unknown Album',
+                                genre: item.genre || 'Unknown Genre',
+                                artwork: item.artwork || 'https://github.com/shadcn.png',
+                              };
+                              useAudioPlayerStore.getState().setQueue(
+                                ai.data!.map((t) => ({
+                                  ...t,
+                                  memory: t.memory || 'AI Suggestions',
+                                  type: t.type || 'remote',
+                                  userId: user?.id || '',
+                                  tags: t.tags || [],
+                                  album: t.album || 'Unknown Album',
+                                  genre: t.genre || 'Unknown Genre',
+                                  artwork: t.artwork || 'https://github.com/shadcn.png',
+                                })),
+                                index
+                              );
+                            }}
                           />
                         </Pressable>
                       )}

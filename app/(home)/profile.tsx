@@ -14,7 +14,7 @@ const Profile = () => {
 
   const handleLogout = async () => {
     await signOut();
-    router.replace('/(auth)/sign-in');
+    router.replace('/(session)/sign-in');
   };
 
   return (

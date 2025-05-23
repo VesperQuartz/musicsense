@@ -27,6 +27,13 @@ const DARK_THEME: Theme = {
 
 export { ErrorBoundary } from 'expo-router';
 
+export const unstable_settings = {
+  initialRouteName: '(home)',
+  initialRouteParams: {
+    initialRouteName: '(home)',
+  },
+};
+
 export default function RootLayout() {
   const hasMounted = React.useRef(false);
   const { isDarkColorScheme, setColorScheme } = useColorScheme();
