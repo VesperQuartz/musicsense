@@ -89,12 +89,12 @@ app.get(
   }
 );
 
-app.post('/memories/track', zValidator('json', TrackInsertSchema), async (c) => {
+app.post('/memories/track', zValidator('json', z.any()), async (c) => {
   const data = c.req.valid('json');
   const memory = new MusicRepo();
   const [error, memories] = await to(
     //@ts-ignore
-    memory.uploadTrack({ ...data, type: data.type, tags: data.tags })
+    memory.uploadTrack({ ...data, type: "local", tags: data.tags })
   );
   if (error) {
     console.error(error, 'memories|track');
