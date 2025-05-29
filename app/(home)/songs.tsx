@@ -6,7 +6,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { ActivityIndicator, View, FlatList, Image, Pressable } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import { z } from 'zod';
 
@@ -123,124 +122,122 @@ const Songs = () => {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <View className="flex-1 gap-2 p-1">
-        <View className="mb-2 mt-2 flex flex-row items-center rounded-xl bg-white/10 px-3 py-2 shadow-md">
-          <Ionicons name="search" size={22} color="#aaa" style={{ marginRight: 8 }} />
-          <Input
-            className="flex-1 border-0 bg-transparent text-white"
-            placeholder="Search local songs..."
-            placeholderTextColor="#aaa"
-            value={query}
-            onChangeText={setQuery}
-            returnKeyType="search"
-            clearButtonMode="while-editing"
-          />
-        </View>
-        <View className="mt-6 flex-1">
-          <Text className="mb-2 text-2xl font-bold text-white">Local Songs</Text>
-          {filteredAssets && filteredAssets.length > 0 ? (
-            <FlatList
-              data={filteredAssets}
-              keyExtractor={(item) => item.id}
-              className=""
-              contentContainerClassName="gap-3 pb-8"
-              renderItem={({ item, index }) => (
-                <Pressable
-                  onLongPress={() => {
-                    setSelectedTrack(mappedAssets[index]);
-                    bottomSheetRef.current?.snapToIndex(0);
-                  }}>
-                  <SongListItem
-                    asset={item}
-                    onPress={() => useAudioPlayerStore.getState().setQueue(mappedAssets, index)}
-                  />
-                </Pressable>
-              )}
-            />
-          ) : (
-            <View className="items-center justify-center py-8">
-              <Text className="text-lg text-neutral-400">No local songs found.</Text>
-            </View>
-          )}
-        </View>
-
-        <BottomSheet
-          ref={bottomSheetRef}
-          index={-1}
-          snapPoints={snapPoints}
-          onChange={handleSheetChanges}
-          backdropComponent={renderBackdrop}
-          enablePanDownToClose
-          backgroundStyle={{ backgroundColor: '#1A1A1A' }}
-          handleIndicatorStyle={{ backgroundColor: '#5C13B5' }}>
-          <BottomSheetView className="flex flex-1 gap-4 p-4">
-            <Text className="mb-2 text-xl font-bold text-white">Add to Memory</Text>
-            <View className="mb-4">
-              <Controller
-                control={control}
-                rules={{
-                  required: true,
-                }}
-                render={({ field: { onChange, value } }) => (
-                  <View>
-                    <Text className="mb-2 text-sm text-white">Select Memory</Text>
-                    <View className="flex-row flex-wrap gap-2">
-                      {categories.data?.map((category) => (
-                        <Button
-                          key={category}
-                          variant={value === category ? 'default' : 'secondary'}
-                          onPress={() => onChange(category)}
-                          className={value === category ? 'bg-[#5C13B5]' : ''}>
-                          <Text className={value === category ? 'text-white' : 'text-neutral-400'}>
-                            {category}
-                          </Text>
-                        </Button>
-                      ))}
-                    </View>
-                  </View>
-                )}
-                name="memory"
-              />
-              {errors.memory && (
-                <Text className="mt-1 text-sm text-red-500">{errors.memory.message}</Text>
-              )}
-            </View>
-
-            <View className="mb-4">
-              <Controller
-                control={control}
-                rules={{ required: false }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <View>
-                    <Text className="mb-2 text-sm text-white">Tags (optional)</Text>
-                    <Input
-                      placeholder="comma, separated, tags"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      className="focus:border-[#5C13B5]"
-                      placeholderTextColor="#aaa"
-                    />
-                  </View>
-                )}
-                name="tags"
-              />
-            </View>
-
-            <Button
-              className="flex flex-row items-center justify-center rounded-lg bg-[#5C13B5] py-3"
-              onPress={onSubmit}>
-              {addToMemory.isPending ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
-              ) : (
-                <Text className="text-lg font-semibold text-white">Add to Memory</Text>
-              )}
-            </Button>
-          </BottomSheetView>
-        </BottomSheet>
+    <View className="flex-1 gap-2 p-1">
+      <View className="mb-2 mt-2 flex flex-row items-center rounded-xl bg-white/10 px-3 py-2 shadow-md">
+        <Ionicons name="search" size={22} color="#aaa" style={{ marginRight: 8 }} />
+        <Input
+          className="flex-1 border-0 bg-transparent text-white"
+          placeholder="Search local songs..."
+          placeholderTextColor="#aaa"
+          value={query}
+          onChangeText={setQuery}
+          returnKeyType="search"
+          clearButtonMode="while-editing"
+        />
       </View>
-    </GestureHandlerRootView>
+      <View className="mt-6 flex-1">
+        <Text className="mb-2 text-2xl font-bold text-white">Local Songs</Text>
+        {filteredAssets && filteredAssets.length > 0 ? (
+          <FlatList
+            data={filteredAssets}
+            keyExtractor={(item) => item.id}
+            className=""
+            contentContainerClassName="gap-3 pb-8"
+            renderItem={({ item, index }) => (
+              <Pressable
+                onLongPress={() => {
+                  setSelectedTrack(mappedAssets[index]);
+                  bottomSheetRef.current?.snapToIndex(0);
+                }}>
+                <SongListItem
+                  asset={item}
+                  onPress={() => useAudioPlayerStore.getState().setQueue(mappedAssets, index)}
+                />
+              </Pressable>
+            )}
+          />
+        ) : (
+          <View className="items-center justify-center py-8">
+            <Text className="text-lg text-neutral-400">No local songs found.</Text>
+          </View>
+        )}
+      </View>
+
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1}
+        snapPoints={snapPoints}
+        onChange={handleSheetChanges}
+        backdropComponent={renderBackdrop}
+        enablePanDownToClose
+        backgroundStyle={{ backgroundColor: '#1A1A1A' }}
+        handleIndicatorStyle={{ backgroundColor: '#5C13B5' }}>
+        <BottomSheetView className="flex flex-1 gap-4 p-4">
+          <Text className="mb-2 text-xl font-bold text-white">Add to Memory</Text>
+          <View className="mb-4">
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, value } }) => (
+                <View>
+                  <Text className="mb-2 text-sm text-white">Select Memory</Text>
+                  <View className="flex-row flex-wrap gap-2">
+                    {categories.data?.map((category) => (
+                      <Button
+                        key={category}
+                        variant={value === category ? 'default' : 'secondary'}
+                        onPress={() => onChange(category)}
+                        className={value === category ? 'bg-[#5C13B5]' : ''}>
+                        <Text className={value === category ? 'text-white' : 'text-neutral-400'}>
+                          {category}
+                        </Text>
+                      </Button>
+                    ))}
+                  </View>
+                </View>
+              )}
+              name="memory"
+            />
+            {errors.memory && (
+              <Text className="mt-1 text-sm text-red-500">{errors.memory.message}</Text>
+            )}
+          </View>
+
+          <View className="mb-4">
+            <Controller
+              control={control}
+              rules={{ required: false }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <View>
+                  <Text className="mb-2 text-sm text-white">Tags (optional)</Text>
+                  <Input
+                    placeholder="comma, separated, tags"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    className="focus:border-[#5C13B5]"
+                    placeholderTextColor="#aaa"
+                  />
+                </View>
+              )}
+              name="tags"
+            />
+          </View>
+
+          <Button
+            className="flex flex-row items-center justify-center rounded-lg bg-[#5C13B5] py-3"
+            onPress={onSubmit}>
+            {addToMemory.isPending ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <Text className="text-lg font-semibold text-white">Add to Memory</Text>
+            )}
+          </Button>
+        </BottomSheetView>
+      </BottomSheet>
+    </View>
   );
 };
 

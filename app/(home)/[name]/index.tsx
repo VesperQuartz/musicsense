@@ -11,7 +11,6 @@ import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { ActivityIndicator, View, FlatList } from 'react-native';
 import { AudioPro, AudioProContentType } from 'react-native-audio-pro';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import { z } from 'zod';
 
@@ -176,7 +175,7 @@ const MemoryIndex = () => {
       : track.data;
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <>
       <View className="flex-1 gap-2 p-1">
         <View className="flex gap-5">
           <View className="flex flex-row items-center justify-between">
@@ -302,7 +301,7 @@ const MemoryIndex = () => {
             </View>
             <Button
               disabled={picked || !audio || loading}
-              className="flex flex-row items-center justify-center gap-2  bg-[#5C13B5]"
+              className="flex flex-row items-center justify-center gap-2 bg-[#5C13B5]"
               onPress={onSubmit}>
               {loading ? (
                 <>
@@ -316,7 +315,7 @@ const MemoryIndex = () => {
           </View>
         </BottomSheetView>
       </BottomSheet>
-    </GestureHandlerRootView>
+    </>
   );
 };
 

@@ -15,6 +15,7 @@ import { env } from '@/config/env';
 import { useColorScheme } from '@/hooks/use-color';
 import { NAV_THEME } from '@/lib/constants';
 import { AsyncProvider } from '@/providers/async-provider';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -60,21 +61,23 @@ export default function RootLayout() {
   }
 
   return (
-    <ClerkProvider tokenCache={tokenCache} publishableKey={env.publishKey}>
-      <AsyncProvider>
-        <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-          <StatusBar style="auto" backgroundColor={isDarkColorScheme ? '#000' : '#fff'} />
-          <Container>
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="(home)" />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-          </Container>
-        </ThemeProvider>
-        <PortalHost />
-      </AsyncProvider>
-      <Toast />
-    </ClerkProvider>
+    <GestureHandlerRootView className="flex-1">
+      <ClerkProvider tokenCache={tokenCache} publishableKey={env.publishKey}>
+        <AsyncProvider>
+          <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+            <StatusBar style="auto" backgroundColor={isDarkColorScheme ? '#000' : '#fff'} />
+            <Container>
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="(home)" />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+            </Container>
+          </ThemeProvider>
+          <PortalHost />
+        </AsyncProvider>
+        <Toast />
+      </ClerkProvider>
+    </GestureHandlerRootView>
   );
 }
 
